@@ -1,0 +1,56 @@
+version: '3'
+
+networks:
+  backend:
+
+services:
+  nginx:
+    container_name: nginx
+    restart: unless-stopped
+    image: nginx:${NGINX_TAG}
+    command: [nginx-debug, '-g', 'daemon off;']
+    healthcheck:
+      test: ["CMD", "curl" ,"--fail", "http://localhost"]
+      timeout: 5s
+      retries: 5
+    ports:
+      - ${NGINX_PORT}:80
+    environment:
+      NGINX_HOST: $NGINX_HOST
+      NGINX_PORT: $NGINX_PORT
+      PROJECT_NAME: $PROJECT_NAME
+    volumes:
+      - ./.docker/config/nginx/templates:/etc/nginx/templates
+      - ./app/public:/var/www/$PROJECT_NAME/public
+    depends_on:
+      - api
+    networks:
+      - backend
+
+  database:
+    container_name: mysql
+    restart: unless-stopped
+    image: mysql:${MYSQL_TAG}
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    ports:
+      - ${MYSQL_PORT}:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+    volumes:
+      - ~/database/mysql/$MYSQL_TAG/$PROJECT_NAME/:/var/lib/mysql
+    networks:
+      - backend
+
+  api:
+    container_name: api
+    image: php:${PHP_FPM_ALPINE_TAG}-fpm-alpine
+    depends_on:
+      - database
+    restart: unless-stopped
+    volumes:
+      - ./app:/var/www/$PROJECT_NAME
+    networks:
+      - backend
