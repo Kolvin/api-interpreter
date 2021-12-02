@@ -7,14 +7,14 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
-class Security
+class Attribute
 {
     /**
      * @param string                     $id
-     * @param string                     $symbol
+     * @param string                     $name
      * @param ArrayCollection<int, Fact> $facts
      */
-    public function __construct(private string $id, private string $symbol, private ArrayCollection $facts)
+    public function __construct(private string $id, private string $name, private ArrayCollection $facts)
     {
         $this->facts = new ArrayCollection();
     }
@@ -24,9 +24,9 @@ class Security
         return $this->id;
     }
 
-    public function getSymbol(): string
+    public function getName(): string
     {
-        return $this->symbol;
+        return $this->name;
     }
 
     /**
@@ -48,7 +48,7 @@ class Security
 
         $metadata->mapField([
             'symbol' => true,
-            'fieldName' => 'symbol',
+            'fieldName' => 'name',
             'type' => 'string',
             'nullable' => false,
         ]);
@@ -56,7 +56,7 @@ class Security
         $metadata->mapOneToMany([
             'fieldName' => 'facts',
             'targetEntity' => Fact::class,
-            'mappedBy' => 'security',
+            'mappedBy' => 'attribute',
         ]);
     }
 
