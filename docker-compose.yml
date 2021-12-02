@@ -28,19 +28,21 @@ services:
       - backend
 
   database:
-    container_name: mysql
+    container_name: postgres
     restart: unless-stopped
-    image: mysql:${MYSQL_TAG}
+    image: postgres:${POSTGRES_TAG}-alpine
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
     ports:
-      - ${MYSQL_PORT}:3306
+      - ${POSTGRES_PORT}:5432
     environment:
-      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ~/database/mysql/$MYSQL_TAG/$PROJECT_NAME/:/var/lib/mysql
+      - ~/database/postgres/$POSTGRES_TAG/$PROJECT_NAME/:/var/lib/postgresql/data:rw
     networks:
       - backend
 
