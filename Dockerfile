@@ -1,10 +1,10 @@
-ARG PHP_FPM_ALPINE_TAG=8.1
-ARG COMPOSER_TAG=2.1.14
+ARG PHP_FPM_ALPINE_TAG=8.0
+ARG COMPOSER_TAG=2.1.12
 ARG BUILD_ENV=dev
 ARG PROJECT_NAME=api
 
 # Vendor
-FROM composer:$COMPOSER_TAG AS dependencies
+FROM composer:${COMPOSER_TAG} AS dependencies
 COPY app/composer.* /app/
 COPY app/symfony.lock /app/
 RUN composer install --ignore-platform-reqs --no-scripts --no-dev
@@ -16,19 +16,18 @@ FROM php:${PHP_FPM_ALPINE_TAG}-fpm-alpine AS base
 COPY .docker/config/php/php.ini.production $PHP_INI_DIR/php.ini
 
 # Tooling
-RUN apk --update add zip libzip-dev curl
+RUN apk --update add zip libzip-dev curl postgresql-dev
 
 # PHP Extenstions
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
-    install-php-extensions gd intl && \
-    docker-php-ext-install pdo_mysql zip
+    docker-php-ext-install pdo pdo_pgsql zip
 
 FROM base as dev
 ARG PROJECT_NAME=api
 
 COPY .docker/config/php/php.ini.development $PHP_INI_DIR/php.ini
-RUN install-php-extensions xdebug @composer-2.0.2
+RUN install-php-extensions @composer-${COMPOSER_TAG}
 WORKDIR /var/www/${PROJECT_NAME}
 
 # Copy in app

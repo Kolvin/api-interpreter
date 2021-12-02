@@ -48,11 +48,16 @@ services:
 
   api:
     container_name: api
-    image: php:${PHP_FPM_ALPINE_TAG}-fpm-alpine
+    build:
+      target: dev
+      context: .
+      args:
+        PHP_FPM_ALPINE_TAG: $PHP_FPM_ALPINE_TAG
+        COMPOSER_TAG: $COMPOSER_TAG
+        PROJECT_NAME: $PROJECT_NAME
     depends_on:
       - database
     restart: unless-stopped
-    working_dir: /var/www/$PROJECT_NAME
     volumes:
       - ./app:/var/www/$PROJECT_NAME
     networks:
