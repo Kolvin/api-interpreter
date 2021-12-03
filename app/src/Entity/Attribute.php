@@ -6,15 +6,16 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\PersistentCollection;
 
 class Attribute
 {
     /**
      * @param string                     $id
      * @param string                     $name
-     * @param ArrayCollection<int, Fact> $facts
+     * @param ArrayCollection<int, Fact>|PersistentCollection<int, Fact> $facts
      */
-    public function __construct(private string $id, private string $name, private ArrayCollection $facts)
+    public function __construct(private string $id, private string $name, private ArrayCollection|PersistentCollection $facts)
     {
         $this->facts = new ArrayCollection();
     }
@@ -42,7 +43,7 @@ class Attribute
         $metadata->mapField([
             'id' => true,
             'fieldName' => 'id',
-            'type' => 'guid',
+            'type' => 'integer',
             'nullable' => false,
         ]);
 

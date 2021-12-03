@@ -6,15 +6,16 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\PersistentCollection;
 
 class Security
 {
     /**
      * @param string                     $id
      * @param string                     $symbol
-     * @param ArrayCollection<int, Fact> $facts
+     * @param ArrayCollection<int, Fact>|PersistentCollection<int, Fact> $facts
      */
-    public function __construct(private string $id, private string $symbol, private ArrayCollection $facts)
+    public function __construct(private string $id, private string $symbol, private ArrayCollection|PersistentCollection $facts)
     {
         $this->facts = new ArrayCollection();
     }
@@ -42,7 +43,7 @@ class Security
         $metadata->mapField([
             'id' => true,
             'fieldName' => 'id',
-            'type' => 'guid',
+            'type' => 'integer',
             'nullable' => false,
         ]);
 
