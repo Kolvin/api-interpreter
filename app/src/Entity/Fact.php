@@ -60,9 +60,4 @@ class Fact
             'inversedBy' => 'facts',
         ]);
     }
-
-//    public static function loadValidatorMetadata(ValidationMetadata $metadata)
-//    {
-//        $metadata->addPropertyConstraint('id', new NotBlank());
-//    }
 }
