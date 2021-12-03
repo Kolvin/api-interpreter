@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\PersistentCollection;
 
 class Attribute
 {
     /**
-     * @param string                     $id
-     * @param string                     $name
-     * @param ArrayCollection<int, Fact>|PersistentCollection<int, Fact> $facts
+     * @param string     $id
+     * @param string     $name
+     * @param Collection $facts
      */
-    public function __construct(private string $id, private string $name, private ArrayCollection|PersistentCollection $facts)
+    public function __construct(private string $id, private string $name, private Collection $facts)
     {
-        $this->facts = new ArrayCollection();
     }
 
     public function getId(): string
@@ -31,9 +29,9 @@ class Attribute
     }
 
     /**
-     * @return ArrayCollection<int, Fact>
+     * @return Collection<int, Fact>
      */
-    public function getFacts(): ArrayCollection
+    public function getFacts(): Collection
     {
         return $this->facts;
     }
@@ -60,9 +58,4 @@ class Attribute
             'mappedBy' => 'attribute',
         ]);
     }
-
-//    public static function loadValidatorMetadata(ValidationMetadata $metadata)
-//    {
-//        $metadata->addPropertyConstraint('id', new NotBlank());
-//    }
 }

@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\PersistentCollection;
 
 class Security
 {
     /**
-     * @param string                     $id
-     * @param string                     $symbol
-     * @param ArrayCollection<int, Fact>|PersistentCollection<int, Fact> $facts
+     * @param string     $id
+     * @param string     $symbol
+     * @param Collection $facts
      */
-    public function __construct(private string $id, private string $symbol, private ArrayCollection|PersistentCollection $facts)
+    public function __construct(private string $id, private string $symbol, private Collection $facts)
     {
-        $this->facts = new ArrayCollection();
     }
 
     public function getId(): string
@@ -30,10 +28,7 @@ class Security
         return $this->symbol;
     }
 
-    /**
-     * @return ArrayCollection<int, Fact>
-     */
-    public function getFacts(): ArrayCollection
+    public function getFacts(): Collection
     {
         return $this->facts;
     }
@@ -60,9 +55,4 @@ class Security
             'mappedBy' => 'security',
         ]);
     }
-
-//    public static function loadValidatorMetadata(ValidationMetadata $metadata)
-//    {
-//        $metadata->addPropertyConstraint('id', new NotBlank());
-//    }
 }

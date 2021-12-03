@@ -7,9 +7,8 @@ namespace App\Services;
 interface FileParserInterface
 {
     /**
-     * pass csv file location along with {fn} to process each line
-     * @param string $filePath
-     * @param callable $fn
+     * pass csv file location along with {fn} to process each line.
+     *
      * @return mixed
      */
     public function parseCSV(string $filePath, callable $fn);
