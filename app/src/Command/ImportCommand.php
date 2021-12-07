@@ -8,7 +8,7 @@ use App\Entity\Security;
 use App\Repository\Interfaces\AttributeRepositoryInterface;
 use App\Repository\Interfaces\FactRepositoryInterface;
 use App\Repository\Interfaces\SecurityRepositoryInterface;
-use App\Services\FileParserInterface;
+use App\Services\File\FileParserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Command\Command;
