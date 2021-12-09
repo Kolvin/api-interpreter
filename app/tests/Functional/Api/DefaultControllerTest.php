@@ -3,10 +3,11 @@
 namespace Tests\Functional\Api;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class DefaultControllerTest extends WebTestCase
 {
-    public function test200IsReturned(): void
+    public function testDefaultEndpoint(): void
     {
         $client = static::createClient();
 
@@ -18,6 +19,11 @@ class DefaultControllerTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json']
         );
 
+        $response = $client->getResponse();
+        $content = json_decode($response->getContent(), true);
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertEquals(['ping' => 'pong'], $content);
     }
 }

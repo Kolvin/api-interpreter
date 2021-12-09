@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services;
 
-use App\Services\FileParserInterface;
+use App\Services\File\FileParserInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 final class FileParserServiceTest extends KernelTestCase

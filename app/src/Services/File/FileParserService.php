@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\File;
 
-class FileParserService implements FileParserInterface
+final class FileParserService implements FileParserInterface
 {
     public function parseCSV(string $filePath, callable $fn): void
     {
