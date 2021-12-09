@@ -28,7 +28,7 @@ final class SecurityExpressionController
             $expressions = $postContent['expression'];
 
             if (!$security instanceof Security) {
-                throw new \Exception('Security not found');
+                throw new \Exception('Security Not Found');
             }
 
             $response = $this->interpreter->handleSecurityExpressions($security, $expressions);
