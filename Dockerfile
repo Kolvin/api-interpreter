@@ -21,7 +21,7 @@ RUN apk --update add zip libzip-dev curl postgresql-dev
 # PHP Extenstions
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
-    docker-php-ext-install pdo pdo_pgsql zip
+    docker-php-ext-install pdo pdo_pgsql zip bcmath
 
 FROM base as dev
 ARG PROJECT_NAME=api

@@ -3,6 +3,8 @@
 namespace App\Repository\Interfaces;
 
 use App\Entity\Fact;
+use App\Entity\Security;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @method Fact|null find($id, $lockMode = null, $lockVersion = null)

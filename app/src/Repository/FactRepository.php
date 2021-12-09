@@ -2,10 +2,14 @@
 
 namespace App\Repository;
 
+use App\Entity\Attribute;
 use App\Entity\Fact;
+use App\Entity\Security;
 use App\Repository\Interfaces\FactRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
