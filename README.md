@@ -14,8 +14,13 @@ docker network create backend
 docker-compose up -d  
 ```
 ___
-
-## 2. Schema Management
+## 2. Dependencies
+#### As long as there is no conflicting local services, the API will be served on [localhost](http://localhost)
+```
+docker-compose exec api composer install
+```
+___
+## 3. Schema Management
 #### append ``--env test`` to target the test env (required for passing test suite)
 ```
 docker-compose exec api bin/console d:d:c 
@@ -23,7 +28,7 @@ docker-compose exec api bin/console d:m:e App\\Migrations\\Version20211209180121
 docker-compose exec api bin/console d:s:v
 ```
 ___
-## 3. Load Project Data
+## 4. Load Project Data
 #### append ``--env test`` to target the test env (required for passing test suite)
 ```
 docker-compose exec api bin/console app:import:data
