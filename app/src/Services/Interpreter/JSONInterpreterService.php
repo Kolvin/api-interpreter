@@ -15,38 +15,47 @@ final class JSONInterpreterService implements InterpreterInterface
     }
 
     /**
-     * @param array<string, mixed> $expression
+     * @param array<string, mixed> $expressions
      */
-    public function handleSecurityExpression(Security $security, array $expression): SecurityExpressionResponse
+    public function handleSecurityExpressions(Security $security, array $expressions): SecurityExpressionResponse
     {
-        // @TODO handle multiple expression to satisfy these requirement
-        // an expression can be one of;
-        //
-        // name of attribute
-        // an int
-        // expression
-        $expressionA = strval($expression['a']);
-        $expressionB = $expression['b'];
+        /** @var string $rootExpressionOperator */
+        $rootExpressionOperator = $expressions['fn'] ?? '';
 
         /** @var int $calculationScale */
-        $calculationScale = $expression['calculation_scale'] ?? 0;
+        $calculationScale = $expressions['calculation_scale'] ?? 0;
 
-        /** @var string $requestedOperator */
-        $requestedOperator = $expression['fn'];
+        $expressionA = $expressions['a'] ?? null;
+        $expressionB = $expressions['b'] ?? null;
 
-        // find facts matching attribute name for the requested security
-        $facts = $this->repository->findFactsByAttributeName($security, $expressionA);
+        if (!$rootExpressionOperator) {
+            return SecurityExpressionResponseFactory::generateInvalidResponse('Operator not found');
+        }
 
-        // assumption here that domain allows multiple security facts to the same attribute
-        // ie; ABC -> 4x Facts that all relate to the sales attribute
-        $attributeTotal = $this->getTotalAttributeCount($facts, $calculationScale);
+        (string) $expressionAOutput = match (gettype($expressionA)) {
+            'array' => $this->handleSecurityExpressions($security, $expressionA)->getResult()['output'],
+            'integer' => $expressionA,
+            'string' => $this->getTotalAttributeCount($this->repository->findFactsByAttributeName($security, $expressionA)),
+            default => false
+        };
+
+        (string) $expressionBOutput = match (gettype($expressionB)) {
+            'array' => $this->handleSecurityExpressions($security, $expressionB)->getResult()['output'],
+            'integer' => $expressionB,
+            'string' => $this->getTotalAttributeCount($this->repository->findFactsByAttributeName($security, $expressionB)),
+            default => false
+        };
+
+        if (!$expressionAOutput || !$expressionBOutput) {
+            return SecurityExpressionResponseFactory::generateInvalidResponse('Failed expression');
+        }
 
         /** @var string|false|null $expressionResult */
-        $expressionResult = match ($requestedOperator) {
-            '*' => $this->multiply($attributeTotal, strval($expressionB), $calculationScale),
-            '/' => $this->divide($attributeTotal, strval($expressionB), $calculationScale),
-            '+' => $this->add($attributeTotal, strval($expressionB), $calculationScale),
-            '-' => $this->subtract($attributeTotal, strval($expressionB), $calculationScale),
+        $expressionResult = match ($rootExpressionOperator) {
+            '*' => $this->multiply($expressionAOutput, $expressionBOutput, $calculationScale),
+            '/' => $this->divide($expressionAOutput, $expressionBOutput, $calculationScale),
+            '+' => $this->add($expressionAOutput, $expressionBOutput, $calculationScale),
+            '-' => $this->subtract($expressionAOutput, $expressionBOutput, $calculationScale),
             default => false
         };
 
@@ -54,13 +63,14 @@ final class JSONInterpreterService implements InterpreterInterface
             return SecurityExpressionResponseFactory::generateInvalidResponse('Division By Zero');
         }
 
-        if (!$expressionResult) {
-            return SecurityExpressionResponseFactory::generateInvalidResponse('Division By Zero');
-        }
-
-        return SecurityExpressionResponseFactory::generateValidResponse($expressionResult);
+        return SecurityExpressionResponseFactory::generateValidResponse((string) $expressionResult);
     }
 
+    /**
+     * Assumption here that domain allows multiple security facts to the same attribute
+     * ie; ABC -> 4x Facts that all relate to the sales attribute
+     * therefor i think it makes sense to add these values together to find the total.
+     */
     private function getTotalAttributeCount(ArrayCollection $facts, int $calculationScale = 0): string
     {
         $attributeTotal = 0;

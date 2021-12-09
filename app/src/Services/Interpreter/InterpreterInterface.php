@@ -10,7 +10,7 @@ use App\Responses\SecurityExpressionResponse;
 interface InterpreterInterface
 {
     /**
-     * @param array<string, mixed> $expression
+     * @param array<string, mixed> $expressions
      */
-    public function handleSecurityExpression(Security $security, array $expression): SecurityExpressionResponse;
+    public function handleSecurityExpressions(Security $security, array $expressions): SecurityExpressionResponse;
 }

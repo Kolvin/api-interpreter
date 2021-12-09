@@ -20,15 +20,18 @@ final class SecurityExpressionController
     public function __invoke(Request $request): ApiResponse
     {
         try {
-            $postContent = (array) json_decode((string) $request->getContent(), true);
+            /** @var array<string, array<string, mixed>|string|float> $postContent */
+            $postContent = json_decode(strval($request->getContent()), true);
             $security = $this->securityRepository->findOneBy(['symbol' => $postContent['security']]);
-            $expression = (array) $postContent['expression'];
+
+            /** @var array<string, mixed> $expressions */
+            $expressions = $postContent['expression'];
 
             if (!$security instanceof Security) {
-                throw new \Exception('security not found');
+                throw new \Exception('Security not found');
             }
 
-            $response = $this->interpreter->handleSecurityExpression($security, $expression);
+            $response = $this->interpreter->handleSecurityExpressions($security, $expressions);
         } catch (\Exception $exception) {
             $response = new SecurityExpressionResponse([], ['error' => $exception->getMessage()], 400);
         }

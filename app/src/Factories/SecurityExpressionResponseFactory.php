@@ -15,6 +15,6 @@ final class SecurityExpressionResponseFactory
 
     public static function generateValidResponse(string $calculationOutput): SecurityExpressionResponse
     {
-        return new SecurityExpressionResponse(['output' => $calculationOutput], [], 400);
+        return new SecurityExpressionResponse(['output' => $calculationOutput], [], 200);
     }
 }
