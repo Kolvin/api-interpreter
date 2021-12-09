@@ -34,6 +34,8 @@ class Fact
 
     public static function loadMetadata(ClassMetadata $metadata): void
     {
+        $metadata->setTableName('facts');
+
         $metadata->mapField([
             'id' => true,
             'fieldName' => 'id',
