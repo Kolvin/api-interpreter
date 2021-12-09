@@ -42,6 +42,9 @@ class SecurityRepository extends ServiceEntityRepository implements SecurityRepo
         return $security;
     }
 
+    /**
+     * @return ArrayCollection<(int|string), mixed>
+     */
     public function findFactsByAttributeName(Security $security, string $attributeName): ArrayCollection
     {
         $qb = $this->createQueryBuilder('s');
@@ -56,6 +59,6 @@ class SecurityRepository extends ServiceEntityRepository implements SecurityRepo
             ->setParameter('name', $attributeName)
         ;
 
-        return new ArrayCollection($qb->getQuery()->getResult());
+        return new ArrayCollection($qb->getQuery()->getArrayResult());
     }
 }

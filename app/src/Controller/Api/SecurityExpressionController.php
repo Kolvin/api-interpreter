@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Security;
 use App\Repository\Interfaces\SecurityRepositoryInterface;
 use App\Responses\ApiResponse;
 use App\Responses\SecurityExpressionResponse;
@@ -22,6 +23,11 @@ final class SecurityExpressionController
             $postContent = (array) json_decode((string) $request->getContent(), true);
             $security = $this->securityRepository->findOneBy(['symbol' => $postContent['security']]);
             $expression = (array) $postContent['expression'];
+
+            if (!$security instanceof Security) {
+                throw new \Exception('security not found');
+            }
+
             $response = $this->interpreter->handleSecurityExpression($security, $expression);
         } catch (\Exception $exception) {
             $response = new SecurityExpressionResponse([], ['error' => $exception->getMessage()], 400);

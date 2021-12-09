@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @method Security|null find($id, $lockMode = null, $lockVersion = null)
- * @method Security[]    findById(array $id)
+ * @method Security|null findOneBy(array $criteria, array $orderBy = null)
  * @method Security[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 interface SecurityRepositoryInterface

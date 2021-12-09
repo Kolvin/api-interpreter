@@ -3,13 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Attribute;
-use App\Entity\Fact;
-use App\Entity\Security;
 use App\Repository\Interfaces\AttributeRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -40,22 +36,5 @@ class AttributeRepository extends ServiceEntityRepository implements AttributeRe
         $this->entityManager->flush();
 
         return $attribute;
-    }
-
-    //
-    public function findByNameAndSecurity(Security $security, string $attributeName): ArrayCollection
-    {
-        $qb = $this->createQueryBuilder('s');
-
-        $qb->select('a')
-            ->from(Attribute::class, 'a')
-            ->where('a.name = :name')
-            ->setParameter('name', $attributeName)
-            ->innerJoin('a.facts', 'f',Join::WITH, 'a.id = f.attribute')
-//            ->setParameter('security', $security)
-        ;
-
-
-        return new ArrayCollection($qb->getQuery()->getResult());
     }
 }
